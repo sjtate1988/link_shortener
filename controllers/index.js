@@ -17,14 +17,11 @@ var Linkshortener = require('../models/linkshortener.js');
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-var info = [];
-
 
 module.exports = function(app){
 /* GET home page. */
 app.get('/', urlencodedParser, function(req,res){
-  info.push(req.body);
-      res.render('index', {LinkShortener: info});
+      res.render('index');
 });
 /* POST request - when asking for a shorter URL */
 app.post('/', urlencodedParser, function(req,res){
@@ -36,11 +33,15 @@ app.post('/', urlencodedParser, function(req,res){
     });
 app.get('/:shortURL', function(req,res){
   console.log(req.params.shortURL);
+  if (req.params.shortURL[0] == ''){
+    res.render('index');
+  }
+  else {
  Linkshortener.find({shorturl : 'localhost:3000/'+req.params.shortURL}, function(err,data){
    console.log(data);
    res.redirect(data[0].longurl);
  });
-
+}
 });
 
 };
